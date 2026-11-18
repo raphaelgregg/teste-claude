@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTA VI – Animação Vice City</title>
+<style>
+  :root {
+    --pink: #ff2d95;
+    --orange: #ff8a3d;
+    --yellow: #ffd23f;
+    --purple: #7b2ff7;
+    --deep: #1a0b3b;
+    --cyan: #27e1ff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--deep); font-family: "Impact", "Arial Black", sans-serif; }
+
+  .scene { position: relative; width: 100%; height: 100%; overflow: hidden;
+    background: linear-gradient(to bottom, #0d0633 0%, #3a0f6b 28%, #c2308a 55%, #ff7a45 75%, #ffd23f 100%); }
+
+  /* Estrelas */
+  .stars { position: absolute; inset: 0 0 45% 0; }
+  .stars i { position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%;
+    animation: twinkle 3s infinite ease-in-out; }
+  @keyframes twinkle { 0%,100% { opacity: .15; } 50% { opacity: 1; } }
+
+  /* Sol */
+  .sun { position: absolute; left: 50%; bottom: 30%; width: min(46vw, 460px); aspect-ratio: 1;
+    transform: translateX(-50%); border-radius: 50%;
+    background: linear-gradient(to bottom, var(--yellow) 0%, var(--orange) 45%, var(--pink) 100%);
+    box-shadow: 0 0 80px 20px rgba(255,120,80,.55), 0 0 200px 60px rgba(255,45,149,.35);
+    animation: rise 3.5s cubic-bezier(.2,.8,.2,1) both, pulse 5s 3.5s infinite ease-in-out;
+  }
+  /* listras do sol */
+  .sun::after { content: ""; position: absolute; inset: 0; border-radius: 50%;
+    background: repeating-linear-gradient(to bottom, transparent 0 7%, var(--stripe, #c2308a) 7% 8.5%);
+    mask-image: linear-gradient(to bottom, transparent 45%, #000 46%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 45%, #000 46%);
+    animation: stripes 6s linear infinite; }
+  @keyframes rise { from { transform: translate(-50%, 70%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+  @keyframes pulse { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.12); } }
+  @keyframes stripes { from { background-position: 0 0; } to { background-position: 0 100px; } }
+
+  /* Prédios (skyline) */
+  .skyline { position: absolute; left: 0; right: 0; bottom: 27%; height: 22%; display: flex; align-items: flex-end;
+    justify-content: space-around; opacity: .95; }
+  .skyline b { display: block; background: linear-gradient(to top, #12062e, #2a0f55); width: 4%;
+    box-shadow: inset 0 0 0 1px rgba(255,45,149,.25);
+    transform-origin: bottom; animation: grow 1.4s ease-out both; }
+  @keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+  /* Mar + reflexo */
+  .sea { position: absolute; left: 0; right: 0; bottom: 18%; height: 12%;
+    background: linear-gradient(to bottom, rgba(255,120,80,.65), rgba(123,47,247,.75)); overflow: hidden; }
+  .sea::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: min(30vw, 300px); transform: translateX(-50%);
+    background: repeating-linear-gradient(to bottom, rgba(255,210,63,.8) 0 3px, transparent 3px 9px);
+    animation: shimmer 2.2s ease-in-out infinite; }
+  @keyframes shimmer { 0%,100% { width: min(30vw,300px); opacity: .9; } 50% { width: min(22vw,220px); opacity: .6; } }
+
+  /* Chão com grade neon */
+  .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 18%;
+    background: #14052e; perspective: 300px; overflow: hidden; }
+  .grid { position: absolute; left: -50%; right: -50%; bottom: 0; height: 200%;
+    transform: rotateX(70deg); transform-origin: bottom;
+    background-image:
+      linear-gradient(var(--pink) 2px, transparent 2px),
+      linear-gradient(90deg, var(--pink) 2px, transparent 2px);
+    background-size: 60px 60px; animation: gridmove 1.2s linear infinite;
+    filter: drop-shadow(0 0 6px var(--pink)); opacity: .8; }
+  @keyframes gridmove { to { background-position: 0 60px, 0 0; } }
+
+  /* Palmeiras */
+  .palm { position: absolute; bottom: 14%; width: 14vw; max-width: 170px; filter: drop-shadow(0 0 12px rgba(0,0,0,.4));
+    transform-origin: bottom center; animation: sway 4.5s ease-in-out infinite; }
+  .palm.left  { left: 3%; }
+  .palm.right { right: 3%; transform: scaleX(-1); animation-name: swayR; height: auto; }
+  .palm.left2  { left: 14%; width: 9vw; max-width: 110px; bottom: 15%; opacity: .85; animation-delay: -1.5s; }
+  .palm.right2 { right: 14%; width: 9vw; max-width: 110px; bottom: 15%; opacity: .85; transform: scaleX(-1); animation-name: swayR; animation-delay: -2s; }
+  @keyframes sway  { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(2.5deg); } }
+  @keyframes swayR { 0%,100% { transform: scaleX(-1) rotate(-2deg); } 50% { transform: scaleX(-1) rotate(2.5deg); } }
+
+  /* Carro */
+  .car { position: absolute; bottom: 7%; left: -25%; width: min(24vw, 260px);
+    animation: drive 9s linear infinite; z-index: 5; filter: drop-shadow(0 0 14px rgba(255,45,149,.7)); }
+  @keyframes drive { from { left: -25%; } to { left: 115%; } }
+  .car .wheel { transform-box: fill-box; transform-origin: center; animation: spin .4s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .car-bob { animation: bob .35s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+
+  /* Título */
+  .title { position: absolute; top: 9%; left: 0; right: 0; text-align: center; z-index: 10; }
+  .title h1 { font-size: clamp(64px, 18vw, 220px); line-height: .9; letter-spacing: .02em; font-weight: 900;
+    filter: drop-shadow(0 0 18px rgba(255,45,149,.65)) drop-shadow(4px 4px 0 rgba(26,11,59,.85));
+    animation: titleIn 2s .6s cubic-bezier(.2,.9,.2,1) both, glow 3s 2.6s infinite ease-in-out; }
+  .title h1 span { display: inline-block;
+    background: linear-gradient(to bottom, #fff6c9 0%, var(--yellow) 25%, var(--orange) 55%, var(--pink) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; animation: letterIn .9s cubic-bezier(.2,1.4,.4,1) both; }
+  @keyframes titleIn { from { opacity: 0; transform: scale(2.4); letter-spacing: .5em; filter: blur(14px); } to { opacity: 1; transform: scale(1); } }
+  @keyframes letterIn { from { opacity: 0; transform: translateY(-80px) rotate(-12deg); } to { opacity: 1; transform: none; } }
+  @keyframes glow { 0%,100% { filter: drop-shadow(0 0 14px rgba(255,45,149,.5)) drop-shadow(4px 4px 0 rgba(26,11,59,.85)); }
+                    50% { filter: drop-shadow(0 0 34px rgba(255,138,61,.95)) drop-shadow(4px 4px 0 rgba(26,11,59,.85)); } }
+  .title p { margin-top: 1.2vh; font-family: "Trebuchet MS", sans-serif; font-weight: 700; letter-spacing: .5em;
+    font-size: clamp(11px, 2vw, 22px); color: #fff; text-shadow: 0 0 10px var(--cyan), 0 0 22px var(--cyan);
+    animation: fadeUp 1.2s 2.4s both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+  /* Contagem / data */
+  .date { position: absolute; top: 46%; left: 0; right: 0; z-index: 10; text-align: center;
+    font-family: "Trebuchet MS", sans-serif; color: #fff; animation: fadeUp 1.2s 3s both; }
+  .date .label { font-size: clamp(10px, 1.4vw, 14px); letter-spacing: .4em; color: var(--cyan);
+    text-shadow: 0 0 10px var(--cyan); }
+  .date .value { font-size: clamp(20px, 3.4vw, 40px); font-weight: 800; margin-top: 4px;
+    text-shadow: 0 0 14px rgba(255,45,149,.9); }
+
+  /* Neon flicker */
+  .neon { position: absolute; bottom: 20%; z-index: 9; font-family: "Brush Script MT", cursive; font-size: clamp(22px, 4vw, 54px);
+    color: var(--cyan); text-shadow: 0 0 6px #fff, 0 0 16px var(--cyan), 0 0 36px var(--cyan);
+    animation: flicker 4s infinite, fadeUp 1.5s 3.4s both; }
+  .neon.l { left: 6%; transform: rotate(-6deg); }
+  .neon.r { right: 6%; color: var(--pink); text-shadow: 0 0 6px #fff, 0 0 16px var(--pink), 0 0 36px var(--pink); transform: rotate(5deg); animation-delay: 1s, 3.6s; }
+  @keyframes flicker { 0%,18%,22%,62%,64%,100% { opacity: 1; } 20%,63% { opacity: .35; } }
+
+  /* Scanlines + vinheta */
+  .fx { position: absolute; inset: 0; pointer-events: none; z-index: 20;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,.08) 0 1px, transparent 1px 3px),
+                radial-gradient(ellipse at center, transparent 55%, rgba(10,3,30,.65) 100%); }
+
+  /* Botão replay */
+  .replay { position: absolute; right: 16px; bottom: 16px; z-index: 30; border: 2px solid var(--cyan); background: rgba(10,3,30,.6);
+    color: var(--cyan); font-family: "Trebuchet MS", sans-serif; font-weight: 700; letter-spacing: .2em; padding: 10px 16px;
+    cursor: pointer; text-shadow: 0 0 8px var(--cyan); box-shadow: 0 0 12px rgba(39,225,255,.4); transition: .2s; }
+  .replay:hover { background: var(--cyan); color: var(--deep); text-shadow: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .01s !important; animation-iteration-count: 1 !important; }
+  }
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+  <div class="stars" id="stars"></div>
+
+  <div class="sun"></div>
+  <div class="skyline" id="skyline"></div>
+  <div class="sea"></div>
+
+  <div class="title">
+    <h1 id="title">GTA VI</h1>
+    <p>BEM-VINDO A LEONIDA</p>
+  </div>
+
+  <div class="date">
+    <div class="label">LANÇAMENTO</div>
+    <div class="value">19 DE NOVEMBRO DE 2026</div>
+  </div>
+
+  <div class="neon l">Vice City</div>
+  <div class="neon r">Leonida</div>
+
+  <!-- Palmeira reutilizável -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <g id="palmShape">
+        <path d="M95 400 C98 300 92 220 100 120" stroke="#0b0420" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <g fill="#0b0420">
+          <path d="M100 120 C60 60 20 70 0 110 C40 90 70 100 100 120Z"/>
+          <path d="M100 120 C80 50 40 20 10 30 C50 50 80 80 100 120Z"/>
+          <path d="M100 120 C110 40 140 10 180 20 C150 50 125 80 100 120Z"/>
+          <path d="M100 120 C140 70 180 70 200 110 C160 90 130 100 100 120Z"/>
+          <path d="M100 120 C70 130 40 160 30 200 C60 170 85 150 100 120Z"/>
+          <path d="M100 120 C130 130 165 160 175 200 C145 170 118 150 100 120Z"/>
+        </g>
+      </g>
+    </defs>
+  </svg>
+  <svg class="palm left"   viewBox="0 0 200 400"><use href="#palmShape"/></svg>
+  <svg class="palm left2"  viewBox="0 0 200 400"><use href="#palmShape"/></svg>
+  <svg class="palm right"  viewBox="0 0 200 400"><use href="#palmShape"/></svg>
+  <svg class="palm right2" viewBox="0 0 200 400"><use href="#palmShape"/></svg>
+
+  <div class="ground"><div class="grid"></div></div>
+
+  <!-- Carro -->
+  <svg class="car" viewBox="0 0 300 100">
+    <g class="car-bob">
+      <path d="M10 70 L25 55 L80 50 L110 28 L190 28 L225 50 L280 56 L292 70 L292 78 L10 78Z" fill="#ff2d95"/>
+      <path d="M118 33 L186 33 L214 50 L96 50Z" fill="#1a0b3b"/>
+      <path d="M118 33 L150 33 L146 50 L108 50Z" fill="#27e1ff" opacity=".55"/>
+      <rect x="10" y="70" width="282" height="5" fill="#7b2ff7"/>
+      <rect x="282" y="60" width="10" height="8" fill="#ffd23f"/>
+      <rect x="10" y="60" width="8" height="8" fill="#ff3b3b"/>
+      <g class="wheel"><circle cx="70" cy="80" r="15" fill="#0b0420"/><circle cx="70" cy="80" r="7" fill="#c8c8d8"/><rect x="68" y="66" width="4" height="28" fill="#0b0420" opacity=".5"/></g>
+      <g class="wheel"><circle cx="230" cy="80" r="15" fill="#0b0420"/><circle cx="230" cy="80" r="7" fill="#c8c8d8"/><rect x="228" y="66" width="4" height="28" fill="#0b0420" opacity=".5"/></g>
+    </g>
+  </svg>
+
+  <div class="fx"></div>
+  <button class="replay" id="replay">↻ REPLAY</button>
+</div>
+
+<script>
+  // Estrelas
+  const stars = document.getElementById('stars');
+  for (let i = 0; i < 70; i++) {
+    const s = document.createElement('i');
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = (Math.random() * 3) + 's';
+    s.style.opacity = Math.random();
+    stars.appendChild(s);
+  }
+
+  // Prédios
+  const sky = document.getElementById('skyline');
+  for (let i = 0; i < 16; i++) {
+    const b = document.createElement('b');
+    b.style.height = (30 + Math.random() * 70) + '%';
+    b.style.animationDelay = (0.3 + Math.random() * 1) + 's';
+    sky.appendChild(b);
+  }
+
+  // Letras do título animadas
+  function buildTitle() {
+    const h = document.getElementById('title');
+    h.innerHTML = [...'GTA VI'].map((c, i) =>
+      c === ' ' ? '&nbsp;' : `<span style="animation-delay:${0.8 + i * 0.12}s">${c}</span>`).join('');
+  }
+  buildTitle();
+
+  // Parallax com o mouse
+  const scene = document.getElementById('scene');
+  scene.addEventListener('mousemove', e => {
+    const x = (e.clientX / innerWidth - 0.5), y = (e.clientY / innerHeight - 0.5);
+    scene.querySelector('.sun').style.translate = `${x * -20}px ${y * -10}px`;
+    scene.querySelector('.skyline').style.translate = `${x * -35}px 0`;
+    document.querySelectorAll('.palm').forEach((p, i) => p.style.translate = `${x * (30 + i * 8)}px 0`);
+    scene.querySelector('.title').style.translate = `${x * 12}px ${y * 8}px`;
+  });
+
+  // Replay: reinicia todas as animações
+  document.getElementById('replay').addEventListener('click', () => {
+    location.reload();
+  });
+</script>
+</body>
+</html>
